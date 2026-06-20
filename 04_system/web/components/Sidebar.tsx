@@ -8,6 +8,8 @@ const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 type Pair = { pangyo: number; cheongna: number };
 type ReachBand = { reach_population: number; reach_workers: number; reach_firms: number };
+export type SelMetric = { label: string; unit: string; p: number; c: number; fmt?: (n: number) => string };
+
 interface Metrics {
   headline: Record<string, Pair>;
   reach: { pangyo: Record<string, ReachBand>; cheongna: Record<string, ReachBand> };
@@ -29,12 +31,13 @@ const COMPARE: { key: string; label: string; unit: string; fmt?: (n: number) => 
 ];
 
 export default function Sidebar({
-  mode, onModeChange, isoBand, onIsoBandChange,
+  mode, onModeChange, isoBand, onIsoBandChange, onSelectMetric,
 }: {
   mode: MapMode;
   onModeChange: (m: MapMode) => void;
   isoBand: IsoBand;
   onIsoBandChange: (b: IsoBand) => void;
+  onSelectMetric: (s: SelMetric) => void;
 }) {
   const [m, setM] = useState<Metrics | null>(null);
   useEffect(() => {
@@ -65,7 +68,17 @@ export default function Sidebar({
           <Btn active={mode === "zoning"} onClick={() => onModeChange("zoning")}>용도지역</Btn>
           <Btn active={mode === "population"} onClick={() => onModeChange("population")}>집계구 인구</Btn>
           <Btn active={mode === "worker"} onClick={() => onModeChange("worker")}>집계구 종사자</Btn>
+          <div className="col-span-2">
+            <Btn active={mode === "flow"} onClick={() => onModeChange("flow")}>이동 흐름 (교통카드 OD)</Btn>
+          </div>
         </div>
+        {mode === "flow" && (
+          <div className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-slate-400">
+            <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-sky-400 rounded" />지하철</span>
+            <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-green-500 rounded" />버스</span>
+            <span className="text-slate-600">선 두께=통행량 · 출발지→핵심역(도착 통행)</span>
+          </div>
+        )}
       </section>
 
       {/* 등시간권 */}
@@ -94,7 +107,8 @@ export default function Sidebar({
           {m && COMPARE.map((c) => {
             const v = m.headline[c.key];
             if (!v) return null;
-            return <CompareBar key={c.key} label={c.label} unit={c.unit} p={v.pangyo} c={v.cheongna} fmt={c.fmt} />;
+            return <CompareBar key={c.key} label={c.label} unit={c.unit} p={v.pangyo} c={v.cheongna} fmt={c.fmt}
+              onClick={() => onSelectMetric({ label: c.label, unit: c.unit, p: v.pangyo, c: v.cheongna, fmt: c.fmt })} />;
           })}
           {!m && <div className="text-[11px] text-slate-500">통계 로드 중...</div>}
         </div>
@@ -146,13 +160,13 @@ function ReachCard({ color, title, pop, wrk }: { color: "sky" | "amber"; title: 
   );
 }
 
-function CompareBar({ label, unit, p, c, fmt }: { label: string; unit: string; p: number; c: number; fmt?: (n: number) => string }) {
+function CompareBar({ label, unit, p, c, fmt, onClick }: { label: string; unit: string; p: number; c: number; fmt?: (n: number) => string; onClick?: () => void }) {
   const max = Math.max(p, c) || 1;
   const f = (n: number) => (fmt ? fmt(n) : n.toLocaleString(undefined, { maximumFractionDigits: 2 }));
   return (
-    <div>
+    <div onClick={onClick} className={onClick ? "cursor-pointer hover:bg-slate-800/50 -mx-2 px-2 py-1 rounded-md transition-colors" : ""}>
       <div className="flex justify-between text-[11px] mb-1">
-        <span className="text-slate-400">{label}</span>
+        <span className="text-slate-400">{label}{onClick ? " ⤢" : ""}</span>
         <span className="text-slate-600">{unit}</span>
       </div>
       <div className="space-y-1">

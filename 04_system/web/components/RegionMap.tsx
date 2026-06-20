@@ -5,11 +5,17 @@ import maplibregl, { Map as MapLibreMap, MapMouseEvent, Popup } from "maplibre-g
 import "maplibre-gl/dist/maplibre-gl.css";
 import { colorExpression, REGIONS, type RegionKey } from "@/lib/categories";
 
-export type MapMode = "main_use" | "zoning" | "population" | "worker";
+export type MapMode = "main_use" | "zoning" | "population" | "worker" | "flow";
 export type IsoBand = "off" | "30" | "60";
 
 const VWORLD_KEY = process.env.NEXT_PUBLIC_VWORLD_API_KEY;
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+// 구역 행정동(집계구 adm_cd 앞 8자리) — 집계구를 구역 범위로 한정(필지/용도지역과 영역 일치)
+const DONG8_OF: Record<RegionKey, string[]> = {
+  pangyo: ["31023740"],
+  cheongna: ["23080740", "23080780", "23080790"],
+};
 
 type ParcelProps = {
   pnu: string;
@@ -115,19 +121,20 @@ export default function RegionMap({
       for (const b of ["60", "30"] as const) {
         const url = `${D}/isochrone_${region}_${b}min.geojson`;
         map.addSource(`iso${b}`, { type: "geojson", data: url });
-        map.addLayer({ id: `iso${b}_fill`, type: "fill", source: `iso${b}`, paint: { "fill-color": cfg.accent, "fill-opacity": b === "30" ? 0.3 : 0.16 }, layout: { visibility: "none" } });
+        map.addLayer({ id: `iso${b}_fill`, type: "fill", source: `iso${b}`, paint: { "fill-color": cfg.accent, "fill-opacity": b === "30" ? 0.45 : 0.28 }, layout: { visibility: "none" } });
         map.addLayer({ id: `iso${b}_line`, type: "line", source: `iso${b}`, paint: { "line-color": cfg.accent, "line-width": 1.4 }, layout: { visibility: "none" } });
         fetch(url).then((r) => r.json()).then((g) => { isoBbox.current[b] = bboxOf(g); }).catch(() => {});
       }
 
-      // 집계구 (인구/종사자 choropleth)
+      // 집계구 (인구/종사자 choropleth) — 구역 행정동만 표시(필지/용도지역과 영역 일치)
+      const censusFilter = ["match", ["slice", ["to-string", ["get", "adm_cd"]], 0, 8], DONG8_OF[region], true, false] as maplibregl.FilterSpecification;
       map.addSource("census", { type: "geojson", data: `${D}/census_tracts_${region}.geojson` });
       map.addLayer({
-        id: "census_fill", type: "fill", source: "census",
-        paint: { "fill-color": ["interpolate", ["linear"], ["coalesce", ["get", "population"], 0], 0, "#f1f5f9", 300, "#bae6fd", 700, "#38bdf8", 1500, "#0284c7", 3000, "#0c4a6e"], "fill-opacity": 0.7 },
+        id: "census_fill", type: "fill", source: "census", filter: censusFilter,
+        paint: { "fill-color": ["interpolate", ["linear"], ["coalesce", ["get", "population"], 0], 0, "#f1f5f9", 300, "#bae6fd", 700, "#38bdf8", 1500, "#0284c7", 3000, "#0c4a6e"], "fill-opacity": 0.78 },
         layout: { visibility: "none" },
       });
-      map.addLayer({ id: "census_line", type: "line", source: "census", paint: { "line-color": "#64748b", "line-width": 0.25 }, layout: { visibility: "none" } });
+      map.addLayer({ id: "census_line", type: "line", source: "census", filter: censusFilter, paint: { "line-color": "#64748b", "line-width": 0.3 }, layout: { visibility: "none" } });
 
       // 필지 (주용도/용도지역)
       map.addSource("parcels", { type: "geojson", data: `${D}/parcels_joined_${region}.geojson` });
@@ -141,6 +148,18 @@ export default function RegionMap({
         id: "isonodes_circle", type: "circle", source: "isonodes",
         paint: { "circle-radius": 3.2, "circle-color": ["match", ["get", "band"], "30min", "#22d3ee", "#c4b5fd"], "circle-stroke-color": "#0f172a", "circle-stroke-width": 0.5 },
         layout: { visibility: "none" },
+      });
+
+      // 이동 흐름 (교통카드 OD arc) — 출발지 → 핵심역, 수단별 색·통행량 두께
+      map.addSource("flow", { type: "geojson", data: `${D}/flow_${region}.geojson` });
+      map.addLayer({
+        id: "flow_line", type: "line", source: "flow",
+        paint: {
+          "line-color": ["match", ["get", "mode"], "subway", "#38bdf8", "bus", "#22c55e", "#94a3b8"],
+          "line-width": ["interpolate", ["linear"], ["get", "weight"], 10, 0.6, 300, 3, 1500, 7],
+          "line-opacity": 0.6,
+        },
+        layout: { visibility: "none", "line-cap": "round" },
       });
 
       // 구역 경계 (최상단)
@@ -174,8 +193,13 @@ export default function RegionMap({
     if (!map || !loaded) return;
     const parcelMode = mode === "main_use" || mode === "zoning";
     const censusMode = mode === "population" || mode === "worker";
+    const flowMode = mode === "flow";
     for (const l of ["parcels_fill", "parcels_line", "parcels_hover"]) map.setLayoutProperty(l, "visibility", parcelMode ? "visible" : "none");
     for (const l of ["census_fill", "census_line"]) map.setLayoutProperty(l, "visibility", censusMode ? "visible" : "none");
+    map.setLayoutProperty("flow_line", "visibility", flowMode ? "visible" : "none");
+    if (flowMode) {
+      map.flyTo({ center: cfg.center, zoom: 9.3, duration: 700 });
+    }
     if (parcelMode) {
       map.setPaintProperty("parcels_fill", "fill-color", colorExpression(mode) as maplibregl.DataDrivenPropertyValueSpecification<string>);
     } else {
