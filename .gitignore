@@ -1,0 +1,25 @@
+# 의존성/빌드
+04_system/web/node_modules/
+04_system/web/.next/
+04_system/web/out/
+node_modules/
+
+# 임시·raw (API 재호출/스크립트로 재현 가능)
+_scratch/
+02_data/raw/
+
+# 인증
+**/.env
+**/.env.local
+**/.env.*
+!**/.env.example
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

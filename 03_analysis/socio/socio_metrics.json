@@ -1,0 +1,28 @@
+{
+  "pangyo": {
+    "n_tracts": 53,
+    "area_km2": 2.795,
+    "population": 23144,
+    "households": 8803,
+    "workers": 95905,
+    "firms": 4677,
+    "jobs_housing_ratio": 4.144,
+    "pop_density_per_km2": 8282.0,
+    "worker_density_per_km2": 34319.0,
+    "workers_per_firm": 20.51,
+    "avg_household_size": 2.63
+  },
+  "cheongna": {
+    "n_tracts": 227,
+    "area_km2": 20.573,
+    "population": 110766,
+    "households": 40979,
+    "workers": 31201,
+    "firms": 9368,
+    "jobs_housing_ratio": 0.282,
+    "pop_density_per_km2": 5384.0,
+    "worker_density_per_km2": 1517.0,
+    "workers_per_firm": 3.33,
+    "avg_household_size": 2.7
+  }
+}

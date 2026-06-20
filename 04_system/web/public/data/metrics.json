@@ -1,0 +1,553 @@
+{
+  "landuse": {
+    "pangyo": {
+      "n_parcels": 468,
+      "n_built_parcels": 125,
+      "lot_area_km2": 2.8203,
+      "total_floor_area_m2": 4418356.0,
+      "avg_FAR_pct": 156.66,
+      "vacant_parcel_pct": 73.29,
+      "vacant_area_pct": 54.29,
+      "LUM_entropy": 1.9619,
+      "LUM_normalized": 0.5022,
+      "zoning_pct": {
+        "준주거지역": 31.85,
+        "자연녹지지역": 25.62,
+        "제3종일반주거지역": 23.18,
+        "보전녹지지역": 13.08,
+        "중심상업지역": 2.94,
+        "근린상업지역": 2.43,
+        "일반상업지역": 0.91
+      },
+      "mainuse_pct": {
+        "업무시설": 45.06,
+        "공동주택": 26.49,
+        "교육연구시설": 20.73,
+        "자동차관련시설": 3.35,
+        "숙박시설": 1.45,
+        "제1종근린생활시설": 1.43,
+        "제2종근린생활시설": 0.59,
+        "분뇨.쓰레기처리시설": 0.38,
+        "종교시설": 0.23,
+        "문화및집회시설": 0.11,
+        "노유자시설": 0.09,
+        "방송통신시설": 0.05
+      },
+      "bjdong_dist": {
+        "4113510900": 417,
+        "4113111600": 47,
+        "4113511000": 3,
+        "4113510800": 1
+      }
+    },
+    "cheongna": {
+      "n_parcels": 3912,
+      "n_built_parcels": 1753,
+      "lot_area_km2": 20.6832,
+      "total_floor_area_m2": 10841923.0,
+      "avg_FAR_pct": 52.42,
+      "vacant_parcel_pct": 55.19,
+      "vacant_area_pct": 59.06,
+      "LUM_entropy": 2.378,
+      "LUM_normalized": 0.5333,
+      "zoning_pct": {
+        "자연녹지지역": 47.38,
+        "제3종일반주거지역": 12.35,
+        "일반상업지역": 10.49,
+        "일반공업지역": 10.05,
+        "중심상업지역": 4.38,
+        "준주거지역": 3.41,
+        "제1종일반주거지역": 3.19,
+        "제2종일반주거지역": 2.67,
+        "준공업지역": 2.61,
+        "제1종전용주거지역": 2.36,
+        "도시지역미지정": 0.55,
+        "제2종전용주거지역": 0.55,
+        "보전녹지지역": 0.0
+      },
+      "mainuse_pct": {
+        "공동주택": 54.74,
+        "업무시설": 16.03,
+        "공장": 6.88,
+        "단독주택": 4.59,
+        "교육연구시설": 4.36,
+        "자동차관련시설": 2.82,
+        "제1종근린생활시설": 2.71,
+        "제2종근린생활시설": 2.67,
+        "판매시설": 1.26,
+        "발전시설": 0.98,
+        "문화및집회시설": 0.63,
+        "방송통신시설": 0.61
+      },
+      "bjdong_dist": {
+        "2826012200": 3885,
+        "2826011100": 19,
+        "2826010400": 7,
+        "2826010600": 1
+      }
+    }
+  },
+  "socio": {
+    "pangyo": {
+      "n_tracts": 53,
+      "area_km2": 2.795,
+      "population": 23144,
+      "households": 8803,
+      "workers": 95905,
+      "firms": 4677,
+      "jobs_housing_ratio": 4.144,
+      "pop_density_per_km2": 8282.0,
+      "worker_density_per_km2": 34319.0,
+      "workers_per_firm": 20.51,
+      "avg_household_size": 2.63
+    },
+    "cheongna": {
+      "n_tracts": 227,
+      "area_km2": 20.573,
+      "population": 110766,
+      "households": 40979,
+      "workers": 31201,
+      "firms": 9368,
+      "jobs_housing_ratio": 0.282,
+      "pop_density_per_km2": 5384.0,
+      "worker_density_per_km2": 1517.0,
+      "workers_per_firm": 3.33,
+      "avg_household_size": 2.7
+    }
+  },
+  "reach": {
+    "pangyo": {
+      "30min": {
+        "reach_population": 1055702,
+        "reach_workers": 1059434,
+        "reach_firms": 151906,
+        "n_emd_touched": 118
+      },
+      "60min": {
+        "reach_population": 8086602,
+        "reach_workers": 5550694,
+        "reach_firms": 1008363,
+        "n_emd_touched": 542
+      }
+    },
+    "cheongna": {
+      "30min": {
+        "reach_population": 201878,
+        "reach_workers": 76486,
+        "reach_firms": 16511,
+        "n_emd_touched": 37
+      },
+      "60min": {
+        "reach_population": 4797532,
+        "reach_workers": 2554873,
+        "reach_firms": 525280,
+        "n_emd_touched": 346
+      }
+    },
+    "_meta": {
+      "method": "행정동 면적안분",
+      "year": "2023",
+      "base_date": "2026-06-20",
+      "n_sigungu": 61,
+      "n_emd": 948,
+      "limitation": "행정동 내 균등분포 가정"
+    }
+  },
+  "isochrone": {
+    "base_date": "2026-06-20",
+    "sources": {
+      "pangyo": [
+        824,
+        26
+      ],
+      "cheongna": [
+        313
+      ]
+    },
+    "active_nodes": 817,
+    "total_nodes": 915,
+    "links_used": 999,
+    "pangyo": {
+      "n30": 100,
+      "n60": 456
+    },
+    "cheongna": {
+      "n30": 49,
+      "n60": 303
+    },
+    "key_dest_minutes": {
+      "강남": {
+        "pangyo": 13.9,
+        "cheongna": 65.3
+      },
+      "서울": {
+        "pangyo": null,
+        "cheongna": null
+      },
+      "여의도": {
+        "pangyo": 37.4,
+        "cheongna": 43.2
+      },
+      "삼성": {
+        "pangyo": 26.7,
+        "cheongna": 73.2
+      },
+      "광화문": {
+        "pangyo": 47.1,
+        "cheongna": 52.2
+      },
+      "시청": {
+        "pangyo": 46.3,
+        "cheongna": 53.5
+      },
+      "판교": {
+        "pangyo": 0.0,
+        "cheongna": 79.1
+      },
+      "청라국제도시": {
+        "pangyo": 80.1,
+        "cheongna": 0.0
+      },
+      "인천공항1터미널": {
+        "pangyo": 100.1,
+        "cheongna": 20.0
+      }
+    }
+  },
+  "road": {
+    "source": "OpenStreetMap contributors (ODbL)",
+    "collected_via": "osmnx 2.0.2 graph_from_polygon",
+    "collected_date": "2026-06-20",
+    "network_type": "drive",
+    "crs_store": "EPSG:4326",
+    "crs_metric": "EPSG:5179",
+    "spatial_scope": "판교 삼평동 구역계 + 청라1~3동 구역계 (구역 내부만)",
+    "regions": {
+      "pangyo": {
+        "region": "pangyo",
+        "area_km2": 2.8417,
+        "road_total_length_km": 70.89,
+        "road_density_km_per_km2": 24.947,
+        "n_road_links": 295,
+        "n_nodes_all": 131,
+        "n_intersections_streetcount_ge3": 125,
+        "intersection_density_per_km2": 43.988,
+        "highway_type_counts": {
+          "tertiary": 79,
+          "residential": 54,
+          "secondary": 52,
+          "motorway_link": 26,
+          "unclassified": 26,
+          "primary": 20,
+          "primary_link": 13,
+          "motorway": 9,
+          "trunk_link": 9,
+          "trunk": 4,
+          "secondary_link": 3
+        },
+        "bbox_4326_minx_miny_maxx_maxy": [
+          127.088595,
+          37.389196,
+          127.120979,
+          37.414687
+        ],
+        "road_ratio_note": "도로폭 정보 불완전 → 면적기반 도로율 미산출, 도로망 밀도(km/㎢)로 대체"
+      },
+      "cheongna": {
+        "region": "cheongna",
+        "area_km2": 20.528,
+        "road_total_length_km": 289.478,
+        "road_density_km_per_km2": 14.102,
+        "n_road_links": 1470,
+        "n_nodes_all": 665,
+        "n_intersections_streetcount_ge3": 599,
+        "intersection_density_per_km2": 29.18,
+        "highway_type_counts": {
+          "residential": 635,
+          "secondary": 308,
+          "tertiary": 227,
+          "unclassified": 123,
+          "tertiary_link": 53,
+          "secondary_link": 25,
+          "motorway_link": 25,
+          "trunk": 20,
+          "motorway": 19,
+          "busway": 19,
+          "trunk_link": 12,
+          "living_street": 4
+        },
+        "bbox_4326_minx_miny_maxx_maxy": [
+          126.572041,
+          37.50827,
+          126.667871,
+          37.563441
+        ],
+        "road_ratio_note": "도로폭 정보 불완전 → 면적기반 도로율 미산출, 도로망 밀도(km/㎢)로 대체"
+      }
+    }
+  },
+  "smartcard": {
+    "pangyo": {
+      "inflow_trips": 31743,
+      "outflow_trips": 28609,
+      "inflow_outflow_ratio": 1.11,
+      "peak_hour": {
+        "0": 11,
+        "1": 5,
+        "2": 2,
+        "4": 258,
+        "5": 989,
+        "6": 3861,
+        "7": 7227,
+        "8": 6387,
+        "9": 3691,
+        "10": 1293,
+        "11": 754,
+        "12": 731,
+        "13": 635,
+        "14": 611,
+        "15": 649,
+        "16": 794,
+        "17": 1073,
+        "18": 1062,
+        "19": 567,
+        "20": 399,
+        "21": 366,
+        "22": 284,
+        "23": 94
+      },
+      "mode_chain_top": {
+        "B": 15339,
+        "T-B": 7128,
+        "B-B": 5473,
+        "B-T-B": 2365,
+        "B-B-B": 917,
+        "T-B-B": 211,
+        "B-B-B-B": 80,
+        "B-T-B-B": 66
+      }
+    },
+    "cheongna": {
+      "inflow_trips": 23257,
+      "outflow_trips": 24580,
+      "inflow_outflow_ratio": 0.946,
+      "peak_hour": {
+        "0": 57,
+        "1": 2,
+        "4": 55,
+        "5": 506,
+        "6": 847,
+        "7": 1388,
+        "8": 1601,
+        "9": 1060,
+        "10": 644,
+        "11": 663,
+        "12": 925,
+        "13": 940,
+        "14": 1013,
+        "15": 1459,
+        "16": 1796,
+        "17": 2533,
+        "18": 2745,
+        "19": 1440,
+        "20": 1184,
+        "21": 1169,
+        "22": 904,
+        "23": 326
+      },
+      "mode_chain_top": {
+        "B": 10309,
+        "T-B": 5407,
+        "T": 3883,
+        "B-B": 1916,
+        "B-T-B": 850,
+        "B-T": 467,
+        "B-B-B": 164,
+        "T-B-B": 79
+      }
+    },
+    "_meta": {
+      "base_date": "2024-11-14",
+      "source": "교통카드 OD 통행사슬(전처리물)",
+      "filter": "구역계 polygon PIP"
+    }
+  },
+  "telco": {
+    "pangyo": {
+      "trips": 460195,
+      "subway_use_pct": 27.6,
+      "rail_use_pct": 0.6,
+      "dist_share_pct": {
+        "도로": 92.0,
+        "지하철": 7.0,
+        "철도": 1.0
+      },
+      "main_mode_trip_pct": {
+        "도로": 90.1,
+        "지하철": 9.7,
+        "철도": 0.3
+      },
+      "peak_hour": {
+        "0": 26348,
+        "1": 27865,
+        "2": 31839,
+        "3": 28577,
+        "4": 20880,
+        "5": 18696,
+        "6": 15869,
+        "7": 10039,
+        "8": 3151,
+        "9": 9418,
+        "10": 2543,
+        "11": 2302,
+        "12": 3032,
+        "13": 7240,
+        "14": 18692,
+        "15": 28708,
+        "16": 34456,
+        "17": 31165,
+        "18": 25402,
+        "19": 21420,
+        "20": 21685,
+        "21": 23529,
+        "22": 23681,
+        "23": 23658
+      }
+    },
+    "cheongna": {
+      "trips": 508461,
+      "subway_use_pct": 16.0,
+      "rail_use_pct": 0.9,
+      "dist_share_pct": {
+        "도로": 92.5,
+        "지하철": 5.8,
+        "철도": 1.8
+      },
+      "main_mode_trip_pct": {
+        "도로": 95.4,
+        "지하철": 4.1,
+        "철도": 0.5
+      },
+      "peak_hour": {
+        "0": 28838,
+        "1": 32813,
+        "2": 38004,
+        "3": 32269,
+        "4": 22541,
+        "5": 20509,
+        "6": 15816,
+        "7": 10684,
+        "8": 3757,
+        "9": 11199,
+        "10": 3790,
+        "11": 3909,
+        "12": 4718,
+        "13": 9544,
+        "14": 18655,
+        "15": 28739,
+        "16": 36888,
+        "17": 32459,
+        "18": 26606,
+        "19": 23400,
+        "20": 24265,
+        "21": 26081,
+        "22": 26778,
+        "23": 26199
+      }
+    },
+    "_meta": {
+      "base_date": "2025-02-11(화)",
+      "method": "통행(trip) 단위 + 거리(length) 가중 — leg 단위 아님",
+      "transfer_type": "1 도로(승용차·버스·택시) / 2 지하철 / 3 철도",
+      "caveat": "P1 맵매칭 특성상 지하철 구간이 도로로 잡힐 수 있어 철도 분담 과소 가능 — 보조지표"
+    }
+  },
+  "stat_tests": {
+    "jobs_housing_ratio": {
+      "test": "집계구 직주비(종사자/상주인구) 분포 — 판교 vs 청라",
+      "n_pangyo": 48,
+      "n_cheongna": 221,
+      "median_pangyo": 0.039,
+      "median_cheongna": 0.044,
+      "KS_stat": 0.17,
+      "KS_p": 0.17805372381348292,
+      "MannWhitney_U_p(판교>청라)": 0.7961542639330533,
+      "cliffs_delta": -0.076
+    },
+    "FAR": {
+      "test": "건축 필지 용적률(연면적/대지면적%) 분포 — 판교 vs 청라",
+      "n_pangyo": 125,
+      "n_cheongna": 1753,
+      "median_pangyo": 589.3,
+      "median_cheongna": 145.4,
+      "KS_stat": 0.697,
+      "KS_p": 1.5382232684703753e-56,
+      "MannWhitney_U_p(판교>청라)": 9.200174144557854e-32,
+      "cliffs_delta": 0.624
+    }
+  },
+  "headline": {
+    "구역면적_㎢": {
+      "pangyo": 2.84,
+      "cheongna": 20.53
+    },
+    "직주비_종사자대인구": {
+      "pangyo": 4.14,
+      "cheongna": 0.28
+    },
+    "종사자수": {
+      "pangyo": 95905,
+      "cheongna": 31201
+    },
+    "종사자밀도_㎢": {
+      "pangyo": 34319,
+      "cheongna": 1517
+    },
+    "업무시설_연면적%": {
+      "pangyo": 45.06,
+      "cheongna": 16.03
+    },
+    "공동주택_연면적%": {
+      "pangyo": 26.49,
+      "cheongna": 54.74
+    },
+    "평균용적률_%": {
+      "pangyo": 156.66,
+      "cheongna": 52.42
+    },
+    "도로망밀도_km당㎢": {
+      "pangyo": 24.95,
+      "cheongna": 14.1
+    },
+    "30분도달종사자": {
+      "pangyo": 1059434,
+      "cheongna": 76486
+    },
+    "60분도달종사자": {
+      "pangyo": 5550694,
+      "cheongna": 2554873
+    },
+    "핵심역_강남_분": {
+      "pangyo": 13.9,
+      "cheongna": 65.3
+    }
+  },
+  "_regions": {
+    "pangyo": {
+      "name": "판교테크노밸리(삼평동)",
+      "station": "판교역(신분당선)",
+      "center": [
+        127.1112,
+        37.3956
+      ]
+    },
+    "cheongna": {
+      "name": "청라국제도시(청라1~3동)",
+      "station": "청라국제도시역(공항철도)",
+      "center": [
+        126.638,
+        37.535
+      ]
+    }
+  }
+}

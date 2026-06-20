@@ -1,0 +1,18 @@
+# 판교·청라 업무지구 비교분석 — 재현용 패키지 (실측 고정 2026-06-20, Python 3.12.3)
+# 대용량 처리: duckdb / pyarrow 컬럼투영·술어푸시다운 (§4-D 통째로드 금지 도그마)
+# 공간: geopandas/pyogrio/shapely/pyproj — 저장 EPSG:4326 / 거리·면적 계산 EPSG:5179
+# 등시간권: scipy.sparse.csgraph.dijkstra
+duckdb==1.5.4
+pyarrow==16.1.0
+pandas>=2.1
+numpy>=1.26
+geopandas==1.0.1
+pyogrio==0.10.0
+shapely==2.1.2
+pyproj>=3.6
+scipy==1.17.0
+requests>=2.31
+python-dotenv>=1.0
+tenacity>=8.2
+tqdm>=4.66
+openpyxl>=3.1

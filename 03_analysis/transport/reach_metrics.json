@@ -1,0 +1,38 @@
+{
+  "pangyo": {
+    "30min": {
+      "reach_population": 1055702,
+      "reach_workers": 1059434,
+      "reach_firms": 151906,
+      "n_emd_touched": 118
+    },
+    "60min": {
+      "reach_population": 8086602,
+      "reach_workers": 5550694,
+      "reach_firms": 1008363,
+      "n_emd_touched": 542
+    }
+  },
+  "cheongna": {
+    "30min": {
+      "reach_population": 201878,
+      "reach_workers": 76486,
+      "reach_firms": 16511,
+      "n_emd_touched": 37
+    },
+    "60min": {
+      "reach_population": 4797532,
+      "reach_workers": 2554873,
+      "reach_firms": 525280,
+      "n_emd_touched": 346
+    }
+  },
+  "_meta": {
+    "method": "행정동 면적안분",
+    "year": "2023",
+    "base_date": "2026-06-20",
+    "n_sigungu": 61,
+    "n_emd": 948,
+    "limitation": "행정동 내 균등분포 가정"
+  }
+}

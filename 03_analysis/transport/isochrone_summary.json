@@ -1,0 +1,61 @@
+{
+  "base_date": "2026-06-20",
+  "sources": {
+    "pangyo": [
+      824,
+      26
+    ],
+    "cheongna": [
+      313
+    ]
+  },
+  "active_nodes": 817,
+  "total_nodes": 915,
+  "links_used": 999,
+  "pangyo": {
+    "n30": 100,
+    "n60": 456
+  },
+  "cheongna": {
+    "n30": 49,
+    "n60": 303
+  },
+  "key_dest_minutes": {
+    "강남": {
+      "pangyo": 13.9,
+      "cheongna": 65.3
+    },
+    "서울": {
+      "pangyo": null,
+      "cheongna": null
+    },
+    "여의도": {
+      "pangyo": 37.4,
+      "cheongna": 43.2
+    },
+    "삼성": {
+      "pangyo": 26.7,
+      "cheongna": 73.2
+    },
+    "광화문": {
+      "pangyo": 47.1,
+      "cheongna": 52.2
+    },
+    "시청": {
+      "pangyo": 46.3,
+      "cheongna": 53.5
+    },
+    "판교": {
+      "pangyo": 0.0,
+      "cheongna": 79.1
+    },
+    "청라국제도시": {
+      "pangyo": 80.1,
+      "cheongna": 0.0
+    },
+    "인천공항1터미널": {
+      "pangyo": 100.1,
+      "cheongna": 20.0
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "source": "OpenStreetMap contributors (ODbL)",
+  "collected_via": "osmnx 2.0.2 graph_from_polygon",
+  "collected_date": "2026-06-20",
+  "network_type": "drive",
+  "crs_store": "EPSG:4326",
+  "crs_metric": "EPSG:5179",
+  "spatial_scope": "판교 삼평동 구역계 + 청라1~3동 구역계 (구역 내부만)",
+  "regions": {
+    "pangyo": {
+      "region": "pangyo",
+      "area_km2": 2.8417,
+      "road_total_length_km": 70.89,
+      "road_density_km_per_km2": 24.947,
+      "n_road_links": 295,
+      "n_nodes_all": 131,
+      "n_intersections_streetcount_ge3": 125,
+      "intersection_density_per_km2": 43.988,
+      "highway_type_counts": {
+        "tertiary": 79,
+        "residential": 54,
+        "secondary": 52,
+        "motorway_link": 26,
+        "unclassified": 26,
+        "primary": 20,
+        "primary_link": 13,
+        "motorway": 9,
+        "trunk_link": 9,
+        "trunk": 4,
+        "secondary_link": 3
+      },
+      "bbox_4326_minx_miny_maxx_maxy": [
+        127.088595,
+        37.389196,
+        127.120979,
+        37.414687
+      ],
+      "road_ratio_note": "도로폭 정보 불완전 → 면적기반 도로율 미산출, 도로망 밀도(km/㎢)로 대체"
+    },
+    "cheongna": {
+      "region": "cheongna",
+      "area_km2": 20.528,
+      "road_total_length_km": 289.478,
+      "road_density_km_per_km2": 14.102,
+      "n_road_links": 1470,
+      "n_nodes_all": 665,
+      "n_intersections_streetcount_ge3": 599,
+      "intersection_density_per_km2": 29.18,
+      "highway_type_counts": {
+        "residential": 635,
+        "secondary": 308,
+        "tertiary": 227,
+        "unclassified": 123,
+        "tertiary_link": 53,
+        "secondary_link": 25,
+        "motorway_link": 25,
+        "trunk": 20,
+        "motorway": 19,
+        "busway": 19,
+        "trunk_link": 12,
+        "living_street": 4
+      },
+      "bbox_4326_minx_miny_maxx_maxy": [
+        126.572041,
+        37.50827,
+        126.667871,
+        37.563441
+      ],
+      "road_ratio_note": "도로폭 정보 불완전 → 면적기반 도로율 미산출, 도로망 밀도(km/㎢)로 대체"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "jobs_housing_ratio": {
+    "test": "집계구 직주비(종사자/상주인구) 분포 — 판교 vs 청라",
+    "n_pangyo": 48,
+    "n_cheongna": 221,
+    "median_pangyo": 0.039,
+    "median_cheongna": 0.044,
+    "KS_stat": 0.17,
+    "KS_p": 0.17805372381348292,
+    "MannWhitney_U_p(판교>청라)": 0.7961542639330533,
+    "cliffs_delta": -0.076
+  },
+  "FAR": {
+    "test": "건축 필지 용적률(연면적/대지면적%) 분포 — 판교 vs 청라",
+    "n_pangyo": 125,
+    "n_cheongna": 1753,
+    "median_pangyo": 589.3,
+    "median_cheongna": 145.4,
+    "KS_stat": 0.697,
+    "KS_p": 1.5382232684703753e-56,
+    "MannWhitney_U_p(판교>청라)": 9.200174144557854e-32,
+    "cliffs_delta": 0.624
+  }
+}
