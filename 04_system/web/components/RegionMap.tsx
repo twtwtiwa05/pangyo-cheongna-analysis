@@ -7,6 +7,7 @@ import { colorExpression, REGIONS, type RegionKey } from "@/lib/categories";
 
 export type MapMode = "main_use" | "zoning" | "population" | "worker" | "flow";
 export type IsoBand = "off" | "30" | "60";
+export type FlowSrc = "card" | "telco";
 
 const VWORLD_KEY = process.env.NEXT_PUBLIC_VWORLD_API_KEY;
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -51,10 +52,12 @@ export default function RegionMap({
   region,
   mode,
   isoBand,
+  flowSrc,
 }: {
   region: RegionKey;
   mode: MapMode;
   isoBand: IsoBand;
+  flowSrc: FlowSrc;
 }) {
   const cfg = REGIONS[region];
   const containerRef = useRef<HTMLDivElement>(null);
@@ -150,14 +153,24 @@ export default function RegionMap({
         layout: { visibility: "none" },
       });
 
-      // 이동 흐름 (교통카드 OD arc) — 출발지 → 핵심역, 수단별 색·통행량 두께
-      map.addSource("flow", { type: "geojson", data: `${D}/flow_${region}.geojson` });
+      // 이동 흐름 (OD arc) — 교통카드(대중교통) / 통신사(전체통행). 출발지 → 핵심역
+      map.addSource("flow_card", { type: "geojson", data: `${D}/flow_${region}.geojson` });
+      map.addSource("flow_telco", { type: "geojson", data: `${D}/flow_telco_${region}.geojson` });
       map.addLayer({
-        id: "flow_line", type: "line", source: "flow",
+        id: "flow_card_line", type: "line", source: "flow_card",
         paint: {
           "line-color": ["match", ["get", "mode"], "subway", "#38bdf8", "bus", "#22c55e", "#94a3b8"],
           "line-width": ["interpolate", ["linear"], ["get", "weight"], 10, 0.6, 300, 3, 1500, 7],
           "line-opacity": 0.6,
+        },
+        layout: { visibility: "none", "line-cap": "round" },
+      });
+      map.addLayer({
+        id: "flow_telco_line", type: "line", source: "flow_telco",
+        paint: {
+          "line-color": ["match", ["get", "mode"], "subway", "#38bdf8", "road", "#fb923c", "#94a3b8"],
+          "line-width": ["interpolate", ["linear"], ["get", "weight"], 100, 0.6, 3000, 3, 15000, 7],
+          "line-opacity": 0.55,
         },
         layout: { visibility: "none", "line-cap": "round" },
       });
@@ -196,7 +209,8 @@ export default function RegionMap({
     const flowMode = mode === "flow";
     for (const l of ["parcels_fill", "parcels_line", "parcels_hover"]) map.setLayoutProperty(l, "visibility", parcelMode ? "visible" : "none");
     for (const l of ["census_fill", "census_line"]) map.setLayoutProperty(l, "visibility", censusMode ? "visible" : "none");
-    map.setLayoutProperty("flow_line", "visibility", flowMode ? "visible" : "none");
+    map.setLayoutProperty("flow_card_line", "visibility", flowMode && flowSrc === "card" ? "visible" : "none");
+    map.setLayoutProperty("flow_telco_line", "visibility", flowMode && flowSrc === "telco" ? "visible" : "none");
     if (flowMode) {
       map.flyTo({ center: cfg.center, zoom: 9.3, duration: 700 });
     }
@@ -209,7 +223,7 @@ export default function RegionMap({
         : ["interpolate", ["linear"], ["coalesce", ["get", field], 0], 0, "#f1f5f9", 300, "#bae6fd", 700, "#38bdf8", 1500, "#0284c7", 3000, "#0c4a6e"];
       map.setPaintProperty("census_fill", "fill-color", ramp as maplibregl.DataDrivenPropertyValueSpecification<string>);
     }
-  }, [mode, loaded]);
+  }, [mode, loaded, flowSrc, cfg.center]);
 
   // 등시간권 전환 + 화면 맞춤
   useEffect(() => {

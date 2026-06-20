@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { MapMode, IsoBand } from "./RegionMap";
+import type { MapMode, IsoBand, FlowSrc } from "./RegionMap";
 import { REGIONS } from "@/lib/categories";
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -31,13 +31,15 @@ const COMPARE: { key: string; label: string; unit: string; fmt?: (n: number) => 
 ];
 
 export default function Sidebar({
-  mode, onModeChange, isoBand, onIsoBandChange, onSelectMetric,
+  mode, onModeChange, isoBand, onIsoBandChange, onSelectMetric, flowSrc, onFlowSrcChange,
 }: {
   mode: MapMode;
   onModeChange: (m: MapMode) => void;
   isoBand: IsoBand;
   onIsoBandChange: (b: IsoBand) => void;
   onSelectMetric: (s: SelMetric) => void;
+  flowSrc: FlowSrc;
+  onFlowSrcChange: (s: FlowSrc) => void;
 }) {
   const [m, setM] = useState<Metrics | null>(null);
   useEffect(() => {
@@ -73,10 +75,18 @@ export default function Sidebar({
           </div>
         </div>
         {mode === "flow" && (
-          <div className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-slate-400">
-            <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-sky-400 rounded" />지하철</span>
-            <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-green-500 rounded" />버스</span>
-            <span className="text-slate-600">선 두께=통행량 · 출발지→핵심역(도착 통행)</span>
+          <div className="mt-2.5">
+            <div className="grid grid-cols-2 gap-1.5 mb-2">
+              <Btn active={flowSrc === "card"} onClick={() => onFlowSrcChange("card")}>교통카드(대중교통)</Btn>
+              <Btn active={flowSrc === "telco"} onClick={() => onFlowSrcChange("telco")}>통신사(전체통행)</Btn>
+            </div>
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-slate-400">
+              <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-sky-400 rounded" />지하철</span>
+              {flowSrc === "card"
+                ? <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-green-500 rounded" />버스</span>
+                : <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-orange-400 rounded" />도로(승용차등)</span>}
+              <span className="text-slate-600 w-full">선 두께=통행량 · 출발지→핵심역(도착 통행) · {flowSrc === "card" ? "교통카드 2024-11" : "통신사 2025-02"}</span>
+            </div>
           </div>
         )}
       </section>
