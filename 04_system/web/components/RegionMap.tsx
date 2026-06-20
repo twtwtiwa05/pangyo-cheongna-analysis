@@ -3,11 +3,18 @@
 import { useEffect, useRef, useState } from "react";
 import maplibregl, { Map as MapLibreMap, MapMouseEvent, Popup } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { colorExpression, REGIONS, type RegionKey } from "@/lib/categories";
+import {
+  colorExpression,
+  rampExpression,
+  POP_RAMP,
+  WORKER_RAMP,
+  REGIONS,
+  type RegionKey,
+} from "@/lib/categories";
+import MapLegend from "./MapLegend";
 
-export type MapMode = "main_use" | "zoning" | "population" | "worker" | "flow";
+export type MapMode = "main_use" | "zoning" | "population" | "worker";
 export type IsoBand = "off" | "30" | "60";
-export type FlowSrc = "card" | "telco";
 
 const VWORLD_KEY = process.env.NEXT_PUBLIC_VWORLD_API_KEY;
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -52,16 +59,10 @@ export default function RegionMap({
   region,
   mode,
   isoBand,
-  flowSrc,
-  flowHour,
-  flowDir,
 }: {
   region: RegionKey;
   mode: MapMode;
   isoBand: IsoBand;
-  flowSrc: FlowSrc;
-  flowHour: number;
-  flowDir: "in" | "out";
 }) {
   const cfg = REGIONS[region];
   const containerRef = useRef<HTMLDivElement>(null);
@@ -157,32 +158,6 @@ export default function RegionMap({
         layout: { visibility: "none" },
       });
 
-      // 이동 흐름 범위 — 수도권 시군구 경계 (flow 모드에서만 표시)
-      map.addSource("sgg_bd", { type: "geojson", data: `${D}/sgg_boundary.geojson` });
-      map.addLayer({ id: "sgg_bd_line", type: "line", source: "sgg_bd", paint: { "line-color": "#0f172a", "line-width": 1.3, "line-opacity": 0.8, "line-dasharray": [3, 2] }, layout: { visibility: "none" } });
-
-      // 이동 흐름 (OD arc) — 교통카드(대중교통) / 통신사(전체통행). 출발지 → 핵심역
-      map.addSource("flow_card", { type: "geojson", data: `${D}/flow_${region}.geojson` });
-      map.addSource("flow_telco", { type: "geojson", data: `${D}/flow_telco_${region}.geojson` });
-      map.addLayer({
-        id: "flow_card_line", type: "line", source: "flow_card",
-        paint: {
-          "line-color": ["match", ["get", "dir"], "in", "#3b82f6", "out", "#f59e0b", "#94a3b8"],
-          "line-width": ["interpolate", ["linear"], ["get", "w"], 0, 2.5, 0.5, 9, 1, 18],
-          "line-opacity": 0.72,
-        },
-        layout: { visibility: "none", "line-cap": "round" },
-      });
-      map.addLayer({
-        id: "flow_telco_line", type: "line", source: "flow_telco",
-        paint: {
-          "line-color": ["match", ["get", "dir"], "in", "#3b82f6", "out", "#f59e0b", "#94a3b8"],
-          "line-width": ["interpolate", ["linear"], ["get", "w"], 0, 2.5, 0.5, 9, 1, 18],
-          "line-opacity": 0.68,
-        },
-        layout: { visibility: "none", "line-cap": "round" },
-      });
-
       // 구역 경계 (최상단)
       map.addSource("district", { type: "geojson", data: `${D}/district_${region}.geojson` });
       map.addLayer({ id: "district_line", type: "line", source: "district", paint: { "line-color": "#0f172a", "line-width": 2.5, "line-dasharray": [2, 1] } });
@@ -208,33 +183,24 @@ export default function RegionMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [region]);
 
-  // 모드 전환
+  // 모드 전환 (레이어 가시성 + 채색) — 카메라는 아래 통합 useEffect에서 관리
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !loaded) return;
     const parcelMode = mode === "main_use" || mode === "zoning";
     const censusMode = mode === "population" || mode === "worker";
-    const flowMode = mode === "flow";
     for (const l of ["parcels_fill", "parcels_line", "parcels_hover"]) map.setLayoutProperty(l, "visibility", parcelMode ? "visible" : "none");
     for (const l of ["census_fill", "census_line"]) map.setLayoutProperty(l, "visibility", censusMode ? "visible" : "none");
-    map.setLayoutProperty("flow_card_line", "visibility", flowMode && flowSrc === "card" ? "visible" : "none");
-    map.setLayoutProperty("flow_telco_line", "visibility", flowMode && flowSrc === "telco" ? "visible" : "none");
-    map.setLayoutProperty("sgg_bd_line", "visibility", flowMode ? "visible" : "none");
-    if (flowMode) {
-      map.flyTo({ center: cfg.center, zoom: 9.3, duration: 700 });
-    }
     if (parcelMode) {
       map.setPaintProperty("parcels_fill", "fill-color", colorExpression(mode) as maplibregl.DataDrivenPropertyValueSpecification<string>);
-    } else {
+    } else if (censusMode) {
       const field = mode === "worker" ? "tot_worker" : "population";
-      const ramp = mode === "worker"
-        ? ["interpolate", ["linear"], ["coalesce", ["get", field], 0], 0, "#f5f3ff", 100, "#ddd6fe", 500, "#a78bfa", 2000, "#7c3aed", 6000, "#4c1d95"]
-        : ["interpolate", ["linear"], ["coalesce", ["get", field], 0], 0, "#f1f5f9", 300, "#bae6fd", 700, "#38bdf8", 1500, "#0284c7", 3000, "#0c4a6e"];
+      const ramp = rampExpression(field, mode === "worker" ? WORKER_RAMP : POP_RAMP);
       map.setPaintProperty("census_fill", "fill-color", ramp as maplibregl.DataDrivenPropertyValueSpecification<string>);
     }
-  }, [mode, loaded, flowSrc, cfg.center]);
+  }, [mode, loaded]);
 
-  // 등시간권 전환 + 화면 맞춤
+  // 등시간권 레이어 가시성
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !loaded) return;
@@ -244,32 +210,39 @@ export default function RegionMap({
       map.setLayoutProperty(`iso${b}_line`, "visibility", v);
     }
     map.setLayoutProperty("isonodes_circle", "visibility", isoBand === "off" ? "none" : "visible");
+  }, [isoBand, loaded]);
+
+  // 카메라 제어 (모드·등시간권 단일 관리) — 모드 클릭 시 구역 줌 복귀, 등시간권 시 권역 맞춤
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !loaded) return;
     if (isoBand === "off") {
       map.flyTo({ center: cfg.center, zoom: cfg.zoom, duration: 700 });
     } else {
       const bb = isoBbox.current[isoBand];
       if (bb) map.fitBounds(bb, { padding: 24, duration: 800 });
     }
-  }, [isoBand, loaded, cfg.center, cfg.zoom]);
-
-  // 이동 흐름 시간대·방향 필터 (교통카드 flow_card)
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map || !loaded) return;
-    const filt = flowHour === -1
-      ? ["==", ["get", "dir"], flowDir]
-      : ["all", ["==", ["get", "dir"], flowDir], ["==", ["get", "hour"], flowHour]];
-    map.setFilter("flow_card_line", filt as maplibregl.FilterSpecification);
-    map.setFilter("flow_telco_line", ["==", ["get", "dir"], flowDir] as maplibregl.FilterSpecification);
-  }, [flowHour, flowDir, loaded]);
+  }, [mode, isoBand, loaded, cfg.center, cfg.zoom]);
 
   return (
     <div className="relative h-full w-full">
       <div ref={containerRef} className="bg-slate-800" style={{ position: "absolute", inset: 0 }} />
-      <div className="absolute top-3 left-3 z-10 px-3 py-1.5 rounded-md bg-slate-900/85 border border-slate-700 backdrop-blur">
-        <div className="text-[13px] font-semibold text-slate-100">{cfg.name}</div>
+      <div
+        className="absolute top-3 left-3 z-10 px-3 py-1.5 rounded-md bg-slate-900/85 border border-slate-700 backdrop-blur"
+        style={{ borderLeft: `3px solid ${cfg.accent}` }}
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="text-[13px] font-semibold text-slate-100">{cfg.name}</span>
+          <span
+            className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full"
+            style={{ background: `${cfg.accent}22`, color: cfg.accent }}
+          >
+            {cfg.outcome === "success" ? "성공" : "저조"}
+          </span>
+        </div>
         <div className="text-[10px] text-slate-400">{cfg.sub} · {cfg.station}</div>
       </div>
+      {loaded && <MapLegend mode={mode} isoBand={isoBand} accent={cfg.accent} />}
       {errMsg && (
         <div className="absolute top-3 right-3 z-10 max-w-xs px-3 py-2 rounded-md bg-amber-500/10 border border-amber-500/40 text-amber-100 text-[11px]">{errMsg}</div>
       )}
@@ -291,9 +264,9 @@ function parcelPopupHTML(p: ParcelProps): string {
     ["건물 수", p.n_buildings != null ? String(p.n_buildings) : "-"],
     ["평균 사용승인년", p.mean_use_apr_year ? String(p.mean_use_apr_year) : "-"],
   ];
-  return `<div style="font:12px/1.5 system-ui,sans-serif;color:#0f172a;">
-    <div style="font-weight:700;font-size:13px;margin-bottom:6px;">${p.jibun || p.pnu}</div>
+  return `<div style="font:12px/1.5 'Pretendard Variable',Pretendard,system-ui,sans-serif;color:#e2e8f0;">
+    <div style="font-weight:700;font-size:13px;margin-bottom:6px;color:#f1f5f9;">${p.jibun || p.pnu}</div>
     <table style="border-collapse:collapse;width:100%;">
-      ${rows.map(([k, v]) => `<tr><td style="color:#64748b;padding:2px 8px 2px 0;white-space:nowrap;vertical-align:top;">${k}</td><td style="padding:2px 0;">${v}</td></tr>`).join("")}
+      ${rows.map(([k, v]) => `<tr><td style="color:#94a3b8;padding:2px 10px 2px 0;white-space:nowrap;vertical-align:top;">${k}</td><td style="padding:2px 0;color:#e2e8f0;">${v}</td></tr>`).join("")}
     </table></div>`;
 }

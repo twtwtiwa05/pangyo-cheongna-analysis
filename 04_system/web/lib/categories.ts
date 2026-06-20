@@ -113,11 +113,10 @@ export function rampExpression(field: string, ramp: RampStop[]): unknown[] {
   return expr;
 }
 
-// ── 이동 흐름 수단별 색 (지역 정체색 amber와 충돌 회피) ──────
+// ── 이동 흐름 방향별 색 (유입/유출 — 지역 정체색 amber와 충돌 회피) ──
 export const FLOW_COLORS = {
-  subway: "#38bdf8", // 지하철 (sky)
-  bus: "#22c55e", // 버스 (green)
-  road: "#fb7185", // 도로(승용차 등) — 청라 amber와 구분되는 rose
+  in: "#3b82f6", // 유입 (→ 구역) blue
+  out: "#fb7185", // 유출 (구역 →) rose — 청라 amber(#f59e0b)와 구분
   default: "#94a3b8",
 };
 

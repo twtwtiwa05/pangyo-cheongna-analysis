@@ -1,0 +1,50 @@
+{
+  "source": {
+    "subway": "제공 subway_network nodes (active 2026-06-20)",
+    "bus": "교통카드 bus_stop_mapping 2024-11-14",
+    "district": "행정동 구역계 EPSG:5179"
+  },
+  "definitions": {
+    "subway_catchment_ratio": "구역 ∩ (임의 지하철역 r m 버퍼 union) 면적 / 구역 면적",
+    "bus_density": "구역 내 버스정류장 수 / 구역 면적(㎢)"
+  },
+  "crs_metric": "EPSG:5179",
+  "base": {
+    "subway": "2026-06-20",
+    "bus": "2024-11-14"
+  },
+  "regions": {
+    "pangyo": {
+      "area_km2": 2.8417,
+      "subway_catchment": {
+        "500m": {
+          "area_km2": 0.4838,
+          "ratio_pct": 17.03
+        },
+        "1000m": {
+          "area_km2": 1.4544,
+          "ratio_pct": 51.18
+        }
+      },
+      "n_subway_stations_near": 8,
+      "bus_stops_in_zone": 69,
+      "bus_density_per_km2": 24.28
+    },
+    "cheongna": {
+      "area_km2": 20.528,
+      "subway_catchment": {
+        "500m": {
+          "area_km2": 0.454,
+          "ratio_pct": 2.21
+        },
+        "1000m": {
+          "area_km2": 1.6617,
+          "ratio_pct": 8.1
+        }
+      },
+      "n_subway_stations_near": 2,
+      "bus_stops_in_zone": 242,
+      "bus_density_per_km2": 11.79
+    }
+  }
+}

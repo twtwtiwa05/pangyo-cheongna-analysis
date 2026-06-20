@@ -2,15 +2,14 @@
 
 import { useState } from "react";
 import Sidebar, { type SelMetric } from "@/components/Sidebar";
-import RegionMap, { type MapMode, type IsoBand, type FlowSrc } from "@/components/RegionMap";
+import RegionMap, { type MapMode, type IsoBand } from "@/components/RegionMap";
+import CommutePattern from "@/components/CommutePattern";
 
 export default function Home() {
   const [mode, setMode] = useState<MapMode>("main_use");
   const [isoBand, setIsoBand] = useState<IsoBand>("off");
-  const [flowSrc, setFlowSrc] = useState<FlowSrc>("card");
-  const [flowHour, setFlowHour] = useState<number>(-1);
-  const [flowDir, setFlowDir] = useState<"in" | "out">("in");
   const [sel, setSel] = useState<SelMetric | null>(null);
+  const [showCommute, setShowCommute] = useState(false);
   // 지도 표시모드 클릭 시 등시간권을 끄고 구역으로 줌 복귀
   const handleMode = (m: MapMode) => {
     setMode(m);
@@ -22,14 +21,21 @@ export default function Home() {
         mode={mode} onModeChange={handleMode}
         isoBand={isoBand} onIsoBandChange={setIsoBand}
         onSelectMetric={setSel}
-        flowSrc={flowSrc} onFlowSrcChange={setFlowSrc}
-        flowHour={flowHour} onFlowHourChange={setFlowHour}
-        flowDir={flowDir} onFlowDirChange={setFlowDir}
       />
       <div className="flex-1 grid grid-cols-2 relative" style={{ gap: "2px", background: "#334155" }}>
-        <RegionMap region="pangyo" mode={mode} isoBand={isoBand} flowSrc={flowSrc} flowHour={flowHour} flowDir={flowDir} />
-        <RegionMap region="cheongna" mode={mode} isoBand={isoBand} flowSrc={flowSrc} flowHour={flowHour} flowDir={flowDir} />
+        <RegionMap region="pangyo" mode={mode} isoBand={isoBand} />
+        <RegionMap region="cheongna" mode={mode} isoBand={isoBand} />
+        <button
+          onClick={() => setShowCommute(true)}
+          className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-5 py-2.5 rounded-full bg-sky-500/95 border border-sky-300/50 text-white text-[14px] font-semibold shadow-xl shadow-sky-900/40 backdrop-blur hover:bg-sky-400 transition-colors"
+        >
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 19V5M4 19h16M8 16v-5M13 16V8M18 16v-3" />
+          </svg>
+          통근 패턴 · 시간대별 유입·유출 보기
+        </button>
         {sel && <MetricOverlay sel={sel} onClose={() => setSel(null)} />}
+        {showCommute && <CommutePattern onClose={() => setShowCommute(false)} />}
       </div>
     </main>
   );

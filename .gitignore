@@ -23,3 +23,14 @@ __pycache__/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# 에이전트(oh-my-claudecode) 상태·빌드 캐시
+**/.omc/
+*.tsbuildinfo
+
+# Office 임시 잠금파일
+~$*
+
+# 미사용 이동흐름(OD) 산출물 — 지도에서 제거됨(통근 패턴 그래프로 대체)
+04_system/web/public/data/flow_*.geojson
+04_system/web/public/data/sgg_boundary.geojson
