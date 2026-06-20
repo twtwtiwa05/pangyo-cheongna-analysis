@@ -8,6 +8,8 @@ export default function Home() {
   const [mode, setMode] = useState<MapMode>("main_use");
   const [isoBand, setIsoBand] = useState<IsoBand>("off");
   const [flowSrc, setFlowSrc] = useState<FlowSrc>("card");
+  const [flowHour, setFlowHour] = useState<number>(-1);
+  const [flowDir, setFlowDir] = useState<"in" | "out">("in");
   const [sel, setSel] = useState<SelMetric | null>(null);
   // 지도 표시모드 클릭 시 등시간권을 끄고 구역으로 줌 복귀
   const handleMode = (m: MapMode) => {
@@ -16,10 +18,17 @@ export default function Home() {
   };
   return (
     <main className="flex bg-slate-900 text-slate-100" style={{ height: "100vh", width: "100vw" }}>
-      <Sidebar mode={mode} onModeChange={handleMode} isoBand={isoBand} onIsoBandChange={setIsoBand} onSelectMetric={setSel} flowSrc={flowSrc} onFlowSrcChange={setFlowSrc} />
+      <Sidebar
+        mode={mode} onModeChange={handleMode}
+        isoBand={isoBand} onIsoBandChange={setIsoBand}
+        onSelectMetric={setSel}
+        flowSrc={flowSrc} onFlowSrcChange={setFlowSrc}
+        flowHour={flowHour} onFlowHourChange={setFlowHour}
+        flowDir={flowDir} onFlowDirChange={setFlowDir}
+      />
       <div className="flex-1 grid grid-cols-2 relative" style={{ gap: "2px", background: "#334155" }}>
-        <RegionMap region="pangyo" mode={mode} isoBand={isoBand} flowSrc={flowSrc} />
-        <RegionMap region="cheongna" mode={mode} isoBand={isoBand} flowSrc={flowSrc} />
+        <RegionMap region="pangyo" mode={mode} isoBand={isoBand} flowSrc={flowSrc} flowHour={flowHour} flowDir={flowDir} />
+        <RegionMap region="cheongna" mode={mode} isoBand={isoBand} flowSrc={flowSrc} flowHour={flowHour} flowDir={flowDir} />
         {sel && <MetricOverlay sel={sel} onClose={() => setSel(null)} />}
       </div>
     </main>

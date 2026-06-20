@@ -53,11 +53,15 @@ export default function RegionMap({
   mode,
   isoBand,
   flowSrc,
+  flowHour,
+  flowDir,
 }: {
   region: RegionKey;
   mode: MapMode;
   isoBand: IsoBand;
   flowSrc: FlowSrc;
+  flowHour: number;
+  flowDir: "in" | "out";
 }) {
   const cfg = REGIONS[region];
   const containerRef = useRef<HTMLDivElement>(null);
@@ -160,8 +164,8 @@ export default function RegionMap({
         id: "flow_card_line", type: "line", source: "flow_card",
         paint: {
           "line-color": ["match", ["get", "mode"], "subway", "#38bdf8", "bus", "#22c55e", "#94a3b8"],
-          "line-width": ["interpolate", ["linear"], ["get", "weight"], 10, 0.6, 300, 3, 1500, 7],
-          "line-opacity": 0.6,
+          "line-width": ["interpolate", ["linear"], ["get", "w"], 0, 0.4, 0.3, 2.5, 1, 9],
+          "line-opacity": 0.62,
         },
         layout: { visibility: "none", "line-cap": "round" },
       });
@@ -242,6 +246,16 @@ export default function RegionMap({
       if (bb) map.fitBounds(bb, { padding: 24, duration: 800 });
     }
   }, [isoBand, loaded, cfg.center, cfg.zoom]);
+
+  // 이동 흐름 시간대·방향 필터 (교통카드 flow_card)
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !loaded) return;
+    const filt = flowHour === -1
+      ? ["==", ["get", "dir"], flowDir]
+      : ["all", ["==", ["get", "dir"], flowDir], ["==", ["get", "hour"], flowHour]];
+    map.setFilter("flow_card_line", filt as maplibregl.FilterSpecification);
+  }, [flowHour, flowDir, loaded]);
 
   return (
     <div className="relative h-full w-full">
