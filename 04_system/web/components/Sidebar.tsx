@@ -84,25 +84,23 @@ export default function Sidebar({
               <Btn active={flowSrc === "card"} onClick={() => onFlowSrcChange("card")}>교통카드(대중교통)</Btn>
               <Btn active={flowSrc === "telco"} onClick={() => onFlowSrcChange("telco")}>통신사(전체통행)</Btn>
             </div>
+            <div className="grid grid-cols-2 gap-1.5 mb-2">
+              <Btn active={flowDir === "in"} onClick={() => onFlowDirChange("in")}>유입 (→ 구역)</Btn>
+              <Btn active={flowDir === "out"} onClick={() => onFlowDirChange("out")}>유출 (구역 →)</Btn>
+            </div>
             {flowSrc === "card" && (
-              <>
-                <div className="grid grid-cols-2 gap-1.5 mb-2">
-                  <Btn active={flowDir === "in"} onClick={() => onFlowDirChange("in")}>유입 (→ 구역)</Btn>
-                  <Btn active={flowDir === "out"} onClick={() => onFlowDirChange("out")}>유출 (구역 →)</Btn>
+              <div className="mb-2.5">
+                <div className="flex justify-between text-[10px] text-slate-500 mb-1">
+                  <span>시간대 (드래그)</span>
+                  <span className="text-sky-300 font-semibold">{flowHour === -1 ? "전체" : `${flowHour}시`}</span>
                 </div>
-                <div className="mb-2.5">
-                  <div className="flex justify-between text-[10px] text-slate-500 mb-1">
-                    <span>시간대 (드래그)</span>
-                    <span className="text-sky-300 font-semibold">{flowHour === -1 ? "전체" : `${flowHour}시`}</span>
-                  </div>
-                  <input type="range" min={-1} max={23} step={1} value={flowHour}
-                    onChange={(e) => onFlowHourChange(Number(e.target.value))}
-                    className="w-full accent-sky-500 cursor-pointer" />
-                  <div className="flex justify-between text-[9px] text-slate-600 mt-0.5">
-                    <span>전체</span><span>0시</span><span>12시</span><span>23시</span>
-                  </div>
+                <input type="range" min={-1} max={23} step={1} value={flowHour}
+                  onChange={(e) => onFlowHourChange(Number(e.target.value))}
+                  className="w-full accent-sky-500 cursor-pointer" />
+                <div className="flex justify-between text-[9px] text-slate-600 mt-0.5">
+                  <span>전체</span><span>0시</span><span>12시</span><span>23시</span>
                 </div>
-              </>
+              </div>
             )}
             <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-slate-400">
               <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-sky-400 rounded" />지하철</span>

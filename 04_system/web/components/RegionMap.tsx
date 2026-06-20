@@ -157,6 +157,10 @@ export default function RegionMap({
         layout: { visibility: "none" },
       });
 
+      // 이동 흐름 범위 — 수도권 시군구 경계 (flow 모드에서만 표시)
+      map.addSource("sgg_bd", { type: "geojson", data: `${D}/sgg_boundary.geojson` });
+      map.addLayer({ id: "sgg_bd_line", type: "line", source: "sgg_bd", paint: { "line-color": "#64748b", "line-width": 0.7, "line-opacity": 0.5 }, layout: { visibility: "none" } });
+
       // 이동 흐름 (OD arc) — 교통카드(대중교통) / 통신사(전체통행). 출발지 → 핵심역
       map.addSource("flow_card", { type: "geojson", data: `${D}/flow_${region}.geojson` });
       map.addSource("flow_telco", { type: "geojson", data: `${D}/flow_telco_${region}.geojson` });
@@ -164,8 +168,8 @@ export default function RegionMap({
         id: "flow_card_line", type: "line", source: "flow_card",
         paint: {
           "line-color": ["match", ["get", "mode"], "subway", "#38bdf8", "bus", "#22c55e", "#94a3b8"],
-          "line-width": ["interpolate", ["linear"], ["get", "w"], 0, 0.4, 0.3, 2.5, 1, 9],
-          "line-opacity": 0.62,
+          "line-width": ["interpolate", ["linear"], ["get", "w"], 0, 1.5, 0.3, 5, 1, 15],
+          "line-opacity": 0.66,
         },
         layout: { visibility: "none", "line-cap": "round" },
       });
@@ -173,8 +177,8 @@ export default function RegionMap({
         id: "flow_telco_line", type: "line", source: "flow_telco",
         paint: {
           "line-color": ["match", ["get", "mode"], "subway", "#38bdf8", "road", "#fb923c", "#94a3b8"],
-          "line-width": ["interpolate", ["linear"], ["get", "weight"], 100, 0.6, 3000, 3, 15000, 7],
-          "line-opacity": 0.55,
+          "line-width": ["interpolate", ["linear"], ["get", "w"], 0, 1.5, 0.3, 5, 1, 15],
+          "line-opacity": 0.6,
         },
         layout: { visibility: "none", "line-cap": "round" },
       });
@@ -215,6 +219,7 @@ export default function RegionMap({
     for (const l of ["census_fill", "census_line"]) map.setLayoutProperty(l, "visibility", censusMode ? "visible" : "none");
     map.setLayoutProperty("flow_card_line", "visibility", flowMode && flowSrc === "card" ? "visible" : "none");
     map.setLayoutProperty("flow_telco_line", "visibility", flowMode && flowSrc === "telco" ? "visible" : "none");
+    map.setLayoutProperty("sgg_bd_line", "visibility", flowMode ? "visible" : "none");
     if (flowMode) {
       map.flyTo({ center: cfg.center, zoom: 9.3, duration: 700 });
     }
@@ -255,6 +260,7 @@ export default function RegionMap({
       ? ["==", ["get", "dir"], flowDir]
       : ["all", ["==", ["get", "dir"], flowDir], ["==", ["get", "hour"], flowHour]];
     map.setFilter("flow_card_line", filt as maplibregl.FilterSpecification);
+    map.setFilter("flow_telco_line", ["==", ["get", "dir"], flowDir] as maplibregl.FilterSpecification);
   }, [flowHour, flowDir, loaded]);
 
   return (
