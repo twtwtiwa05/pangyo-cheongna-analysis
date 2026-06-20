@@ -67,8 +67,7 @@ for m in members:
             sgg = node_sgg.get(str(r.nd))
             if not sgg:
                 continue
-            mode = "subway" if (r.sd or 0) > (r.rd or 0) else "road"
-            k = (r.dir, sgg, mode)
+            k = (r.dir, sgg)
             a[k] = a.get(k, 0) + 1
     con.close()
     out.unlink()
@@ -89,11 +88,11 @@ for region in ["pangyo", "cheongna"]:
     for direction in ["in", "out"]:
         items = [(k, v) for k, v in a.items() if k[0] == direction]
         sgg_tot = {}
-        for (d, sgg, mode), v in items:
+        for (d, sgg), v in items:
             sgg_tot[sgg] = sgg_tot.get(sgg, 0) + v
-        top = set(sorted(sgg_tot, key=lambda s: -sgg_tot[s])[:30])
+        top = set(sorted(sgg_tot, key=lambda s: -sgg_tot[s])[:60])
         mx = max(sgg_tot.values(), default=1)
-        for (d, sgg, mode), v in items:
+        for (d, sgg), v in items:
             if sgg not in top:
                 continue
             c = sgg_cent.get(sgg)
@@ -101,8 +100,8 @@ for region in ["pangyo", "cheongna"]:
                 continue
             aa, bb = (c, hub) if d == "in" else (hub, c)
             feats.append({"type": "Feature", "geometry": {"type": "LineString", "coordinates": arc(aa, bb)},
-                          "properties": {"dir": d, "sgg": sgg_name.get(sgg, sgg), "mode": mode,
-                                         "weight": int(v), "w": round(min(v / mx, 1), 3), "hour": -1}})
+                          "properties": {"dir": d, "sgg": sgg_name.get(sgg, sgg),
+                                         "weight": int(v), "w": round(min((v / mx) ** 0.5, 1), 3), "hour": -1}})
     fc = {"type": "FeatureCollection", "name": f"flow_telco_{region}", "features": feats}
     (SYS / f"flow_telco_{region}.geojson").write_text(json.dumps(fc, ensure_ascii=False), encoding="utf-8")
     print(f"{region}: {len(feats)} features (시군구 in/out × 도로/지하철)")

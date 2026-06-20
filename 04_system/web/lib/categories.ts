@@ -1,5 +1,6 @@
-// 주용도 · 용도지역 카테고리별 컬러 팔레트 + 지역(판교/청라) 설정.
+// 주용도 · 용도지역 카테고리별 컬러 팔레트 + 지역(판교/청라) 설정 + 범례·스케일 데이터.
 // 직관성 우선 (주거=따뜻, 상업=강조, 녹지=초록, 공업=회색 등).
+// 지도 채색과 범례가 동일 색을 공유하도록 이 파일을 단일 소스로 둔다.
 
 export const MAIN_USE_COLORS: Record<string, string> = {
   공동주택: "#ef4444",
@@ -13,7 +14,7 @@ export const MAIN_USE_COLORS: Record<string, string> = {
   종교시설: "#a78bfa",
   운동시설: "#22c55e",
   문화및집회시설: "#d946ef",
-  숙박시설: "#f59e0b",
+  숙박시설: "#fbbf24",
   자동차관련시설: "#64748b",
   창고시설: "#78716c",
   공장: "#475569",
@@ -56,6 +57,70 @@ export function colorExpression(field: "main_use" | "zoning"): unknown[] {
   return expr;
 }
 
+// ── 범례 구성 (지도 위 색의 의미) ────────────────────────────
+export interface LegendItem {
+  label: string;
+  color: string;
+}
+
+// 주용도: 두 지역에서 비중이 큰 주요 카테고리만 노출 (20종 전체는 과부하)
+export const MAIN_USE_LEGEND: LegendItem[] = [
+  { label: "업무시설", color: MAIN_USE_COLORS["업무시설"] },
+  { label: "공동주택", color: MAIN_USE_COLORS["공동주택"] },
+  { label: "단독주택", color: MAIN_USE_COLORS["단독주택"] },
+  { label: "교육연구시설", color: MAIN_USE_COLORS["교육연구시설"] },
+  { label: "판매시설", color: MAIN_USE_COLORS["판매시설"] },
+  { label: "근린생활시설", color: MAIN_USE_COLORS["제1종근린생활시설"] },
+  { label: "공장", color: MAIN_USE_COLORS["공장"] },
+  { label: "기타", color: DEFAULT_COLOR },
+];
+
+// 용도지역: 세분(16종) 대신 대분류 그룹으로 요약 (직관성)
+export const ZONING_LEGEND: LegendItem[] = [
+  { label: "주거지역", color: "#fbbf24" },
+  { label: "상업지역", color: "#ef4444" },
+  { label: "공업지역", color: "#6b7280" },
+  { label: "녹지지역", color: "#22c55e" },
+];
+
+// ── 집계구 choropleth 스케일 (인구·종사자) ───────────────────
+export interface RampStop {
+  stop: number;
+  color: string;
+}
+
+export const POP_RAMP: RampStop[] = [
+  { stop: 0, color: "#f1f5f9" },
+  { stop: 300, color: "#bae6fd" },
+  { stop: 700, color: "#38bdf8" },
+  { stop: 1500, color: "#0284c7" },
+  { stop: 3000, color: "#0c4a6e" },
+];
+
+// 종사자: 인구(파랑)와 구분되는 보라 계열
+export const WORKER_RAMP: RampStop[] = [
+  { stop: 0, color: "#f5f3ff" },
+  { stop: 100, color: "#ddd6fe" },
+  { stop: 500, color: "#a78bfa" },
+  { stop: 2000, color: "#7c3aed" },
+  { stop: 6000, color: "#4c1d95" },
+];
+
+// MapLibre interpolate 표현식 생성 (지도 채색 — 범례와 동일 ramp 공유)
+export function rampExpression(field: string, ramp: RampStop[]): unknown[] {
+  const expr: unknown[] = ["interpolate", ["linear"], ["coalesce", ["get", field], 0]];
+  for (const r of ramp) expr.push(r.stop, r.color);
+  return expr;
+}
+
+// ── 이동 흐름 수단별 색 (지역 정체색 amber와 충돌 회피) ──────
+export const FLOW_COLORS = {
+  subway: "#38bdf8", // 지하철 (sky)
+  bus: "#22c55e", // 버스 (green)
+  road: "#fb7185", // 도로(승용차 등) — 청라 amber와 구분되는 rose
+  default: "#94a3b8",
+};
+
 // ── 지역(구역) 설정 ──────────────────────────────────────────
 export type RegionKey = "pangyo" | "cheongna";
 
@@ -67,7 +132,7 @@ export interface RegionConfig {
   outcome: "success" | "low";
   center: [number, number];
   zoom: number;
-  accent: string;   // 지역 강조색
+  accent: string;   // 지역 강조색 (지역 구분 전용)
 }
 
 export const REGIONS: Record<RegionKey, RegionConfig> = {

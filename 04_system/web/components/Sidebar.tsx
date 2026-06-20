@@ -103,11 +103,10 @@ export default function Sidebar({
               </div>
             )}
             <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-slate-400">
-              <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-sky-400 rounded" />지하철</span>
-              {flowSrc === "card"
-                ? <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-green-500 rounded" />버스</span>
-                : <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-orange-400 rounded" />도로(승용차등)</span>}
-              <span className="text-slate-600 w-full">선 두께=통행량(정규화) · 시군구 ↔ 핵심역 · {flowSrc === "card" ? "교통카드 2024-11" : "통신사 2025-02"}</span>
+              <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-blue-500 rounded" />유입(→구역)</span>
+              <span className="flex items-center gap-1"><span className="inline-block w-3 h-[3px] bg-amber-500 rounded" />유출(구역→)</span>
+              <span className="flex items-center gap-1"><span className="inline-block w-3 border-b border-dashed border-slate-400" />시군구 경계</span>
+              <span className="text-slate-600 w-full">선 두께=통행량(√정규화) · 시군구 60개 ↔ 핵심역 · {flowSrc === "card" ? "교통카드 2024-11" : "통신사 2025-02"}</span>
             </div>
           </div>
         )}

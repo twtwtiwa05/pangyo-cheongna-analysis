@@ -1,0 +1,7 @@
+{
+  "tool_name": "mcp__plugin_ecc_chrome-devtools__navigate_page",
+  "tool_input_preview": "{\"type\":\"reload\"}",
+  "error": "The browser is already running for C:\\Users\\USER\\.cache\\chrome-devtools-mcp\\chrome-profile. Use --isolated to run multiple browser instances.\nCause: The browser is already running for C:\\Users\\USER\\.cache\\chrome-devtools-mcp\\chrome-profile. Use a different `userDataDir` or stop the running browser first.",
+  "timestamp": "2026-06-20T16:25:43.268Z",
+  "retry_count": 1
+}

@@ -159,7 +159,7 @@ export default function RegionMap({
 
       // 이동 흐름 범위 — 수도권 시군구 경계 (flow 모드에서만 표시)
       map.addSource("sgg_bd", { type: "geojson", data: `${D}/sgg_boundary.geojson` });
-      map.addLayer({ id: "sgg_bd_line", type: "line", source: "sgg_bd", paint: { "line-color": "#64748b", "line-width": 0.7, "line-opacity": 0.5 }, layout: { visibility: "none" } });
+      map.addLayer({ id: "sgg_bd_line", type: "line", source: "sgg_bd", paint: { "line-color": "#0f172a", "line-width": 1.3, "line-opacity": 0.8, "line-dasharray": [3, 2] }, layout: { visibility: "none" } });
 
       // 이동 흐름 (OD arc) — 교통카드(대중교통) / 통신사(전체통행). 출발지 → 핵심역
       map.addSource("flow_card", { type: "geojson", data: `${D}/flow_${region}.geojson` });
@@ -167,18 +167,18 @@ export default function RegionMap({
       map.addLayer({
         id: "flow_card_line", type: "line", source: "flow_card",
         paint: {
-          "line-color": ["match", ["get", "mode"], "subway", "#38bdf8", "bus", "#22c55e", "#94a3b8"],
-          "line-width": ["interpolate", ["linear"], ["get", "w"], 0, 1.5, 0.3, 5, 1, 15],
-          "line-opacity": 0.66,
+          "line-color": ["match", ["get", "dir"], "in", "#3b82f6", "out", "#f59e0b", "#94a3b8"],
+          "line-width": ["interpolate", ["linear"], ["get", "w"], 0, 2.5, 0.5, 9, 1, 18],
+          "line-opacity": 0.72,
         },
         layout: { visibility: "none", "line-cap": "round" },
       });
       map.addLayer({
         id: "flow_telco_line", type: "line", source: "flow_telco",
         paint: {
-          "line-color": ["match", ["get", "mode"], "subway", "#38bdf8", "road", "#fb923c", "#94a3b8"],
-          "line-width": ["interpolate", ["linear"], ["get", "w"], 0, 1.5, 0.3, 5, 1, 15],
-          "line-opacity": 0.6,
+          "line-color": ["match", ["get", "dir"], "in", "#3b82f6", "out", "#f59e0b", "#94a3b8"],
+          "line-width": ["interpolate", ["linear"], ["get", "w"], 0, 2.5, 0.5, 9, 1, 18],
+          "line-opacity": 0.68,
         },
         layout: { visibility: "none", "line-cap": "round" },
       });

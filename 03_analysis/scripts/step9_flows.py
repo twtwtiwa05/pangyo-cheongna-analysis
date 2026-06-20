@@ -77,11 +77,11 @@ for region in ["pangyo", "cheongna"]:
         df["sgg"] = df.st.map(station_sgg)
         df = df.dropna(subset=["sgg"])
         df["mode"] = df.has_subway.map(lambda b: "subway" if b else "bus")
-        g = df.groupby(["sgg", "hour", "mode"], as_index=False).n.sum()
-        gall = df.groupby(["sgg", "mode"], as_index=False).n.sum()
+        g = df.groupby(["sgg", "hour"], as_index=False).n.sum()
+        gall = df.groupby(["sgg"], as_index=False).n.sum()
         gall["hour"] = -1
         allrows = pd.concat([g, gall], ignore_index=True)
-        top = df.groupby("sgg").n.sum().sort_values(ascending=False).head(30).index
+        top = df.groupby("sgg").n.sum().sort_values(ascending=False).head(60).index
         allrows = allrows[allrows.sgg.isin(top)]
         mx = allrows[allrows.hour == -1].n.max() or 1
         for r in allrows.itertuples(index=False):
@@ -91,8 +91,8 @@ for region in ["pangyo", "cheongna"]:
             a, b = (c, hub) if direction == "in" else (hub, c)
             feats.append({"type": "Feature", "geometry": {"type": "LineString", "coordinates": arc(a, b)},
                           "properties": {"dir": direction, "sgg": sgg_name.get(r.sgg, r.sgg), "hour": int(r.hour),
-                                         "mode": r.mode, "weight": int(r.n), "w": round(min(r.n / mx, 1), 3)}})
+                                         "weight": int(r.n), "w": round(min((r.n / mx) ** 0.5, 1), 3)}})
     fc = {"type": "FeatureCollection", "name": f"flow_{region}", "features": feats}
     (SYS / f"flow_{region}.geojson").write_text(json.dumps(fc, ensure_ascii=False), encoding="utf-8")
     nin = sum(1 for f in feats if f["properties"]["dir"] == "in" and f["properties"]["hour"] == -1)
-    print(f"{region}: {len(feats)} features | 전체 유입 시군구 {nin} | 지하철feat {sum(1 for f in feats if f['properties']['mode']=='subway' and f['properties']['hour']==-1)}")
+    print(f"{region}: {len(feats)} features | 전체 유입 시군구 {nin}")
