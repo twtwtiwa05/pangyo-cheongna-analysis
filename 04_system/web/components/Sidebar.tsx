@@ -11,7 +11,13 @@ type ReachBand = { reach_population: number; reach_workers: number; reach_firms:
 interface Metrics {
   headline: Record<string, Pair>;
   reach: { pangyo: Record<string, ReachBand>; cheongna: Record<string, ReachBand> };
+  landuse: {
+    pangyo: { mainuse_pct: Record<string, number> };
+    cheongna: { mainuse_pct: Record<string, number> };
+  };
 }
+
+const USES = ["업무시설", "공동주택", "교육연구시설", "단독주택", "공장"];
 
 const COMPARE: { key: string; label: string; unit: string; fmt?: (n: number) => string }[] = [
   { key: "직주비_종사자대인구", label: "직주비 (종사자/인구)", unit: "" },
@@ -93,6 +99,21 @@ export default function Sidebar({
           {!m && <div className="text-[11px] text-slate-500">통계 로드 중...</div>}
         </div>
       </section>
+
+      {/* 주용도 구성 비교 (연면적%) */}
+      {m && (
+        <section className="px-5 py-4 border-b border-slate-800">
+          <SectionTitle>주용도 구성 (연면적%)</SectionTitle>
+          <div className="space-y-3 mt-1">
+            {USES.map((u) => {
+              const p = m.landuse.pangyo.mainuse_pct[u] || 0;
+              const c = m.landuse.cheongna.mainuse_pct[u] || 0;
+              if (p < 1 && c < 1) return null;
+              return <CompareBar key={u} label={u} unit="%" p={p} c={c} />;
+            })}
+          </div>
+        </section>
+      )}
 
       <footer className="px-5 py-4 text-[10px] text-slate-600 leading-relaxed">
         필지 클릭 시 상세(용적률·연면적). 데이터: SGIS·VWorld·건축HUB·OSM·지하철망 · 베이스맵 © V-World/OSM

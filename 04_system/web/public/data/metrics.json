@@ -472,7 +472,8 @@
       "KS_stat": 0.17,
       "KS_p": 0.17805372381348292,
       "MannWhitney_U_p(판교>청라)": 0.7961542639330533,
-      "cliffs_delta": -0.076
+      "cliffs_delta": -0.076,
+      "note": "집계구 median은 판교<청라로 역전 — 판교 종사자가 소수 업무집계구에 극집중(다수 집계구는 주거)되기 때문. 구역 합산 직주비는 판교 4.14 vs 청라 0.28이며, 역전 자체가 업무 집적의 증거. 강건한 통계근거는 아래 FAR(용적률)·worker_concentration 참조."
     },
     "FAR": {
       "test": "건축 필지 용적률(연면적/대지면적%) 분포 — 판교 vs 청라",
@@ -484,6 +485,12 @@
       "KS_p": 1.5382232684703753e-56,
       "MannWhitney_U_p(판교>청라)": 9.200174144557854e-32,
       "cliffs_delta": 0.624
+    },
+    "worker_concentration": {
+      "test": "종사자 공간집중도 — 상위 10% 집계구의 종사자 점유율(%)",
+      "top10pct_share_pangyo": 96.5,
+      "top10pct_share_cheongna": 75.4,
+      "interpretation": "값이 높을수록 소수 집계구에 종사자 집중(업무지구). 판교>청라이면 업무 집적의 직접 증거 — 집계구 직주비 median 역전(C-3)을 설명."
     }
   },
   "headline": {

@@ -1,0 +1,4 @@
+{"t":0,"agent":"af372ad","agent_type":"rubric-auditor","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a147ef6","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"a787276","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"af372ad","agent_type":"rubric-auditor","event":"agent_stop","success":true,"duration_ms":287075}

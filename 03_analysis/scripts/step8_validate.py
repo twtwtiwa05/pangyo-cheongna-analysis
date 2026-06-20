@@ -51,6 +51,7 @@ out["jobs_housing_ratio"] = {
     "KS_stat": round(float(ks.statistic), 3), "KS_p": float(ks.pvalue),
     "MannWhitney_U_p(판교>청라)": float(mw.pvalue),
     "cliffs_delta": round(float(cliffs_delta(jhr["pangyo"], jhr["cheongna"])), 3),
+    "note": "집계구 median은 판교<청라로 역전 — 판교 종사자가 소수 업무집계구에 극집중(다수 집계구는 주거)되기 때문. 구역 합산 직주비는 판교 4.14 vs 청라 0.28이며, 역전 자체가 업무 집적의 증거. 강건한 통계근거는 아래 FAR(용적률)·worker_concentration 참조.",
 }
 
 # 2) 필지 용적률 분포
@@ -71,9 +72,34 @@ out["FAR"] = {
     "cliffs_delta": round(float(cliffs_delta(far["pangyo"], far["cheongna"])), 3),
 }
 
+# 3) 종사자 공간집중도 — 상위 10% 집계구의 종사자 점유율(판교 업무집적 정량, 직주비 역전 방어)
+def top_share(vals, frac=0.1):
+    s = sorted([v for v in vals if v > 0], reverse=True)
+    if not s:
+        return 0.0
+    k = max(1, int(len(s) * frac))
+    return round(sum(s[:k]) / sum(s) * 100, 1)
+
+wc = {}
+for region in ["pangyo", "cheongna"]:
+    tr = gpd.read_file(PROC / f"census_tracts_{region}.geojson")
+    tr["dong8"] = tr["adm_cd"].astype(str).str[:8]
+    d = tr[tr["dong8"].isin(DONG[region])]
+    w = pd.to_numeric(d["tot_worker"], errors="coerce").fillna(0)
+    wc[region] = top_share(w.tolist())
+out["worker_concentration"] = {
+    "test": "종사자 공간집중도 — 상위 10% 집계구의 종사자 점유율(%)",
+    "top10pct_share_pangyo": wc["pangyo"], "top10pct_share_cheongna": wc["cheongna"],
+    "interpretation": "값이 높을수록 소수 집계구에 종사자 집중(업무지구). 판교>청라이면 업무 집적의 직접 증거 — 집계구 직주비 median 역전(C-3)을 설명.",
+}
+print(f"\n[worker_concentration] 상위10% 집계구 종사자점유율 — 판교 {wc['pangyo']}% vs 청라 {wc['cheongna']}%")
+
 (ANA / "stat_tests.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
 for k, v in out.items():
-    print(f"\n[{k}] {v['test']}")
-    print(f"  중앙값 판교 {v['median_pangyo']} vs 청라 {v['median_cheongna']} (n={v['n_pangyo']}/{v['n_cheongna']})")
-    print(f"  KS={v['KS_stat']} p={v['KS_p']:.2e} | Cliff's δ={v['cliffs_delta']}")
+    print(f"\n[{k}] {v.get('test', '')}")
+    if "median_pangyo" in v:
+        print(f"  중앙값 판교 {v['median_pangyo']} vs 청라 {v['median_cheongna']} (n={v['n_pangyo']}/{v['n_cheongna']})")
+        print(f"  KS={v['KS_stat']} p={v['KS_p']:.2e} | Cliff's δ={v['cliffs_delta']}")
+    elif "top10pct_share_pangyo" in v:
+        print(f"  상위10% 집계구 종사자점유율 — 판교 {v['top10pct_share_pangyo']}% vs 청라 {v['top10pct_share_cheongna']}%")
 print("\n[저장] stat_tests.json")
